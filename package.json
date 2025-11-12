@@ -1,8 +1,11 @@
 {
-  "name": "mcp-whatsapp-web",
+  "name": "@iflow-mcp/mcp-whatsapp-web",
   "version": "1.0.0",
   "description": "TypeScript MCP server for WhatsApp using whatsapp-web.js",
   "main": "dist/index.js",
+  "bin": {
+    "mcp-whatsapp-web": "dist/index.js"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc",
