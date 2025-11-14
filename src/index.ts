@@ -4,8 +4,14 @@
 import 'dotenv/config';
 
 // At the very top of src/index.ts, before any imports
-if (process.argv.includes('--stdio') || 
-    (!process.argv.includes('--sse') && process.env.TRANSPORT !== 'sse')) {
+// Check for stdio transport mode - support both --stdio and --transport stdio formats
+const hasStdioFlag = process.argv.includes('--stdio');
+const hasTransportStdio = process.argv.includes('--transport') &&
+  (process.argv.includes('stdio') || process.argv[process.argv.indexOf('--transport') + 1] === 'stdio');
+const isStdioMode = hasStdioFlag || hasTransportStdio ||
+  (!process.argv.includes('--sse') && process.env.TRANSPORT !== 'sse');
+
+if (isStdioMode) {
   // Redirect stdout and stderr to prevent breaking MCP protocol
   
   // // Silently discard all stdout writes
@@ -113,7 +119,7 @@ async function main() {
   serverInstance = new WhatsAppMcpServer();
 
   // Determine transport from command line arguments or environment variables
-  // For now, defaulting to stdio
+  // Support both --stdio and --transport stdio formats
   const transportType = process.argv.includes('--sse') ? 'sse' : 'stdio';
 
   try {

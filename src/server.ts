@@ -63,17 +63,28 @@ export class WhatsAppMcpServer {
   }
 
   async start(transportType: 'stdio' | 'sse' = 'stdio') {
-    log.info(`Initializing WhatsApp client...`);
-    try {
-      // Clean up any orphaned browser processes before starting
-      await this.browserProcessManager.cleanupOrphanedProcesses();
-      
-      // Initialize the WhatsApp client
-      await this.whatsapp.initialize();
-      log.info('WhatsApp client initialized successfully.');
-    } catch (error) {
-      log.error('Failed to initialize WhatsApp client:', error);
-      throw error; // Rethrow to prevent server start
+    // Check if we're in test mode or if WhatsApp initialization should be skipped
+    const isTestMode = process.env.NODE_ENV === 'test' ||
+                      process.env.SKIP_WHATSAPP_INIT === 'true' ||
+                      process.argv.includes('--test') ||
+                      process.argv.includes('--skip-whatsapp');
+
+    if (!isTestMode) {
+      log.info(`Initializing WhatsApp client...`);
+      try {
+        // Clean up any orphaned browser processes before starting
+        await this.browserProcessManager.cleanupOrphanedProcesses();
+
+        // Initialize the WhatsApp client
+        await this.whatsapp.initialize();
+        log.info('WhatsApp client initialized successfully.');
+      } catch (error) {
+        log.error('Failed to initialize WhatsApp client:', error);
+        log.warn('Continuing without WhatsApp client - some tools may not work');
+        // Don't throw error, allow server to start in limited mode
+      }
+    } else {
+      log.info('Test mode detected - skipping WhatsApp client initialization');
     }
 
     if (transportType === 'stdio') {

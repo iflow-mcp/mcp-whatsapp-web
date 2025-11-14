@@ -1,6 +1,6 @@
 {
   "name": "@iflow-mcp/mcp-whatsapp-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript MCP server for WhatsApp using whatsapp-web.js",
   "main": "dist/index.js",
   "bin": {
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",
-    "@types/node": "^18.19.39",
+    "@types/node": "^18.19.130",
     "@types/pino": "^7.0.4",
     "@types/qrcode-terminal": "^0.12.2",
     "@types/temp": "^0.9.4",
